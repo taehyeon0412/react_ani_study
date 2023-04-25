@@ -15,52 +15,32 @@ const Box = styled(motion.div)`
   grid-template-columns: repeat(2, 1fr);
   width: 200px;
   height: 200px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: white;
   border-radius: 40px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const Circle = styled(motion.div)`
-  place-self: center;
-  background-color: white;
-  height: 70px;
-  width: 70px;
-  border-radius: 35px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-`;
-
 const boxVar = {
-  start: { opacity: 0, scale: 0.5 },
-  end: {
-    opacity: 1,
-    scale: 1,
+  hover: { scale: 1.5, rotateZ: 90 },
+  click: { scale: 1, borderRadius: "100px" },
+  drag: {
+    backgroundColor: "rgba(235, 213, 21, 0.849)",
     transition: {
-      type: "spring",
-      duration: 0.8,
-      bounce: 0.5,
-      delayChildren: 0.8, //자식들의 모든 딜레이
-      staggerChildren: 0.2, //자식들 순서대로 딜레이 ex)첫번째 0.3 두번째 0.3*2 세번째 0.3*3...
+      duration: 2,
     },
-  },
-};
-
-const circleVar = {
-  start: { opacity: 0, y: 10 },
-  end: {
-    opacity: 1,
-    y: 0,
   },
 };
 
 function App() {
   return (
     <Wrapper>
-      <Box variants={boxVar} initial="start" animate="end">
-        <Circle variants={circleVar} />
-        <Circle variants={circleVar} />
-        <Circle variants={circleVar} />
-        <Circle variants={circleVar} />
-      </Box>
+      <Box
+        drag
+        variants={boxVar}
+        whileHover="hover"
+        whileTap="click"
+        whileDrag="drag"
+      />
     </Wrapper>
   );
 }
@@ -71,4 +51,9 @@ export default App;
 /* 모션 애니메이션을 적용한 스타일 컴포넌트 쓰는법 
    => 기존 styled.div ==> 변경 styled(motion.div)*/
 
-/* variants,initial,animate */
+/* variants,initial,animate*/
+/*
+delayChildren: 0.8, 자식들의 모든 딜레이
+staggerChildren: 0.2, 자식들 순서대로 딜레이 ex)첫번째 0.3 두번째 0.3*2 세번째 0.3*3... */
+
+/* 색깔은 string이 아닌 숫자 rgba로 넣어줘야 애니메이션이 작동한다 */
