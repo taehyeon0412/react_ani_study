@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import { useRef } from "react";
+import { motion, useMotionValue, useMotionValueEvent } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -8,16 +8,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const BiggerBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 400px;
-  height: 400px;
-  background-color: rgba(255, 255, 255, 0.4);
-  border-radius: 40px;
 `;
 
 const Box = styled(motion.div)`
@@ -40,21 +30,18 @@ const boxVar = {
 };
 
 function App() {
-  const biggerBoxRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  useMotionValueEvent(x, "change", (xValue) => {
+    console.log("x변함", xValue);
+  });
+
   return (
     <Wrapper>
-      <BiggerBox ref={biggerBoxRef}>
-        <Box
-          drag
-          dragConstraints={biggerBoxRef} //드래그 제약
-          dragSnapToOrigin //드래그 끝에는 중앙으로 가게함
-          dragElastic={1} //드래그 탄력성
-          variants={boxVar}
-          whileHover="hover"
-          whileTap="click"
-          whileDrag="drag"
-        />
-      </BiggerBox>
+      <Box
+        style={{ x }}
+        drag="x"
+        dragSnapToOrigin //드래그 끝에는 중앙으로 가게함
+      />
     </Wrapper>
   );
 }
