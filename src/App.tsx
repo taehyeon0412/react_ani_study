@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { motion, useMotionValue, useMotionValueEvent } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 
 const Wrapper = styled.div`
@@ -8,6 +13,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 `;
 
 const Box = styled(motion.div)`
@@ -18,27 +24,18 @@ const Box = styled(motion.div)`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const boxVar = {
-  hover: { scale: 1.5, rotateZ: 90 },
-  click: { scale: 1, borderRadius: "100px" },
-  drag: {
-    backgroundColor: "rgba(235, 213, 21, 0.849)",
-    transition: {
-      duration: 2,
-    },
-  },
-};
-
 function App() {
   const x = useMotionValue(0);
-  useMotionValueEvent(x, "change", (xValue) => {
+  const scale = useTransform(x, [-500, 0, 500], [2, 1, 0.1]);
+
+  useMotionValueEvent(scale, "change", (xValue) => {
     console.log("x변함", xValue);
   });
 
   return (
     <Wrapper>
       <Box
-        style={{ x }}
+        style={{ x, scale }}
         drag="x"
         dragSnapToOrigin //드래그 끝에는 중앙으로 가게함
       />
