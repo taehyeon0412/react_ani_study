@@ -4,16 +4,17 @@ import {
   useMotionValue,
   useMotionValueEvent,
   useTransform,
+  useScroll,
 } from "framer-motion";
-import { useEffect, useRef } from "react";
 
-const Wrapper = styled.div`
-  height: 100vh;
+const Wrapper = styled(motion.div)`
+  height: 200vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background: linear-gradient(135deg, rgb(35, 75, 107), rgb(36, 108, 150));
 `;
 
 const Box = styled(motion.div)`
@@ -26,16 +27,31 @@ const Box = styled(motion.div)`
 
 function App() {
   const x = useMotionValue(0);
-  const scale = useTransform(x, [-500, 0, 500], [2, 1, 0.1]);
+  const rotateZ = useTransform(x, [-500, 500], [-360, 360]);
+  const gradient = useTransform(
+    x,
+    [-500, 0, 500],
+    [
+      `linear-gradient(135deg, rgb(136, 186, 226), rgb(5, 163, 255))`,
+      `linear-gradient(135deg, rgb(27, 28, 29), rgb(36, 108, 150))`,
+      `linear-gradient(135deg, rgb(45, 175, 67), rgb(178, 250, 95))`,
+    ]
+  );
+  const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
 
-  useMotionValueEvent(scale, "change", (xValue) => {
-    console.log("x변함", xValue);
+  useMotionValueEvent(rotateZ, "change", (latest) => {
+    console.log("x변함", latest);
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    console.log("scrollYProgress : ", latest);
   });
 
   return (
-    <Wrapper>
+    <Wrapper style={{ background: gradient }}>
       <Box
-        style={{ x, scale }}
+        style={{ x, rotateZ, scale }}
         drag="x"
         dragSnapToOrigin //드래그 끝에는 중앙으로 가게함
       />
