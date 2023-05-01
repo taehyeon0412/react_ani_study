@@ -27,34 +27,50 @@ const Box = styled(motion.div)`
 `;
 
 const boxVar = {
-  invisible: { x: 500, opacity: 0, scale: 0 },
-  visible: { x: 0, opacity: 1, scale: 1, transition: { duration: 0.5 } },
-  exit: { x: -500, opacity: 0, scale: 0, transition: { duration: 0.5 } },
+  entry: (back: boolean) => ({
+    x: back ? -500 : 500,
+    opacity: 0,
+    scale: 0,
+  }),
+
+  center: { x: 0, opacity: 1, scale: 1, transition: { duration: 0.5 } },
+
+  exit: (back: boolean) => ({
+    x: back ? 500 : -500,
+    opacity: 0,
+    scale: 0,
+    transition: { duration: 0.5 },
+  }),
 };
 
 function App() {
   const [visible, setVisible] = useState(1);
-  const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
-  /* const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1)); */
+  const [back, setBack] = useState(false);
+
+  const nextPlease = () => {
+    setBack(false);
+    setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+  };
+  const prevPlease = () => {
+    setBack(true);
+    setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+  };
 
   return (
     <Wrapper>
-      <AnimatePresence>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
-          i === visible ? (
-            <Box
-              variants={boxVar}
-              initial="invisible"
-              animate="visible"
-              exit="exit" //element가 사라질 때 어떤 animation을 발생시킬지 정함
-              key={i}
-            >
-              {i}
-            </Box>
-          ) : null
-        )}
+      <AnimatePresence custom={back}>
+        <Box
+          custom={back}
+          variants={boxVar}
+          initial="entry"
+          animate="center"
+          exit="exit" //element가 사라질 때 어떤 animation을 발생시킬지 정함
+          key={visible}
+        >
+          {visible}
+        </Box>
       </AnimatePresence>
-      {/* <button onClick={prevPlease}>이전</button> */}
+      <button onClick={prevPlease}>이전</button>
       <button onClick={nextPlease}>다음</button>
     </Wrapper>
   );
